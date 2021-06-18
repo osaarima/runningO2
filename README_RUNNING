@@ -1,0 +1,71 @@
+This readme file is for gathering general instructions for running in CSC.
+
+-----------------------=====================-----------------------
+
+Interactive running is good for testing and for short and simple runs.
+For running interactively, you can use these commands for example:
+
+# Use screen especially if you need to leave the interactive session running for a long time.
+screen
+cd /projappl/project_2003583
+
+# Change the settings here accordingly! Try to save billing units if possible.
+sinteractive --account project_2003583 --time 48:00:00 --mem 8000 --tmp 100
+
+# You can make your own singularity run script for specific settings
+./run_singularity_docker.sh
+
+alienv enter O2/latest-dev-o2,AliRoot/latest-master-o2
+
+# If you wish, you can use super fast disk which is located at $TMPDIR
+# The contents will be deleted after exiting sinteractive.
+cd $TMPDIR    
+mkdir o2-test
+cd o2-test
+
+# Note: Only 1 core for sinteractive by default, you can ask for 2 cores max if I recall correctly
+# Change number of events and other settings as you wish of course
+o2-sim -j 1 --seed 1000 -n 2 -m FV0 FT0 ITS PIPE MFT -g external --configKeyValues 'GeneratorExternal.fileName=/alicesw/O2/run/SimExamples/AliRoot_AMPT/aliroot_ampt.macro;GeneratorExternal.funcName=ampt(5500., 6.99, 8.56, 4)
+# Or if you want to use pythia with config file:
+o2-sim -j 1 --seed 1000 -n 2 -m FV0 FT0 ITS PIPE MFT -g pythia8hi --configKeyValues 'GeneratorPythia8.config=/projappl/project_2003583/simO2/pythia8_hi.cfg'
+
+# Digitizer:
+o2-sim-digitizer-workflow -b --onlyDet=FV0,FT0 --interactionRate 5
+
+-----------------------=====================-----------------------
+
+
+
+For running with batch job you can look at the examples 'submit.sh', 'run', and 'inside_container.sh'
+
+This is done in three stages to clarify different parts:
+
+- submit.sh:           This file has all the batch job settings and instructions included
+                       in the beginning of the file. The instructions need to be commented
+                       out as the batch job system searches specifically for those comments.
+                       In the end, submit.sh launches 'run' for instructions for each
+                       individual instance which is launched.
+- run:                 As stated, each instance of the batch job array will run these
+                       instructions. The important part here is to set up the environments
+                       and settings for the singularity.
+- inside_container.sh: This script contains all the commands that are done inside the
+                       container. For running in an ALICE environment like o2, you should
+                       use the setenv, for example like this:
+		       'alienv setenv O2/latest-dev-o2 -c <command>'
+                       so that the command you want to run with ALICE environment works.
+                       'alienv load' for some reason is not working properly.
+                       Note: This macro is given as an argument to the submit.sh so you can
+                       create your own and combine different inside_container macros if you
+                       wish.
+
+Try to estimate the number of cores and memory accordingly before launching massive jobs.
+General rule is that CPU's are expensive, memory and space is cheap.
+
+Arguments for submit.sh:
+sbatch submit.sh <comment> <nEvts> <digitizer interaction rate Hz> <digitizer comment> <insideMacro.sh>
+Examples for running submit.sh:
+sbatch submit.sh testName 2 5 default /projappl/project_2003583/simO2/inside_container_pythia8hi.sh
+
+If you want to run only the digitizer for an existing run, you can just give the submit.sh the digitizer
+inside container macro so only that will be launched:
+sbatch submit.sh testName 2 1e3 newDigitizerTest /projappl/project_2003583/simO2/inside_container_runDigitizer.sh

@@ -1,0 +1,19 @@
+You can find singularity from here
+https://github.com/hpcng/singularity
+and installation instructions from here
+https://github.com/hpcng/singularity/blob/master/INSTALL.md
+Using stable versions is recommended.
+
+If you wish, you can compile the container yourself from the definition file.
+Precise instructions for how to compile the container are included in the def
+file itself.
+
+As the ALICE software takes quite a lot of space, I recommend reserving 100 GB
+of free storage space for temporary files before starting, and also 16 GB of
+RAM. The def file is designed for 10 threads, but you can reduce the amount of
+threads if you wish to do so. The end file should be around 21 GB in size.
+
+If you have some special modifications for the installation you can simply
+modify the installation commands in the .def file to your needs.
+
+Oskari Saarimäki oskari.a.m.saarimaki@jyu.fi

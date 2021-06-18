@@ -1,0 +1,35 @@
+#!/bin/bash
+
+echo "Run O2 detector simulation"
+time=$(date)
+echo "Start time : $time"
+
+export seed=1000
+jobid=$SLURM_ARRAY_TASK_ID
+seed=$((seed+jobid))
+
+export dir=${1}
+export dirDigit=${2}
+export evt=${3}
+export digHz=${4}
+export macro=${5}
+
+export currentDir=$(pwd)
+
+cd $dir
+
+echo "Processing ${evt} events"
+
+# Settings for singularity:
+export SINGULARITY_BIND="/projappl/project_2003583,/scratch/project_2003583,$TMPDIR"
+export SINGULARITY_SHELL="/bin/bash --norc"
+export SINGULARITY_CACHEDIR=$TMPDIR
+
+singularity exec --home $HOME --workdir $TMPDIR /projappl/project_2003583/alidockSingularity_21-06-10.sif $macro
+
+time=$(date)
+echo "Transportation and digitalization finished : $time"
+
+cd $currentDir
+
+echo "Job is finished!"
