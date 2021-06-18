@@ -111,7 +111,7 @@ echo "Starting Slurm array job ${SLURM_ARRAY_JOB_ID}, task ${SLURM_ARRAY_TASK_ID
 mkdir -p $outputdir
 mkdir -p $outputdirDigit
 mkdir -p ${outputdir}/logs
-/projappl/project_2003583/simO2/run $outputdir $outputdirDigit $nevents $digitizerHz $insideMacro
+/projappl/project_2003583/simO2/runningO2/run $outputdir $outputdirDigit $nevents $digitizerHz $insideMacro
 sleep 1
 cp logs/output_${SLURM_ARRAY_JOB_ID}-run${SLURM_ARRAY_TASK_ID}.txt $outputdir/logs/
 cp logs/errors_${SLURM_ARRAY_JOB_ID}-run${SLURM_ARRAY_TASK_ID}.txt $outputdir/logs/

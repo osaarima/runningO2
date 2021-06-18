@@ -10,4 +10,4 @@ fi
 simFolder=$1
 fileName=$2
 
-root -b -x -l -q "/projappl/project_2003583/simO2/post_analysis/FillPhiEtaHistograms.C(\"${simFolder}/${fileName}\", \"\",0,0,\"${simFolder}\")"; 
+root -b -x -l -q "/projappl/project_2003583/simO2/runningO2/post/FillPhiEtaHistograms.C(\"${simFolder}/${fileName}\", \"\",0,0,\"${simFolder}\")"; 
