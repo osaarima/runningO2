@@ -42,7 +42,7 @@
 #Mem BU: 9.84
 #
 #Notes: 
-#4Gigs of ram were not enough always for 4-cpu 100 evts runs.
+#4Gigs/CPU of ram were not enough always for 4-cpu 100 evts runs.
 
 #source setup.sh
 

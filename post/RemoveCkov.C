@@ -41,7 +41,7 @@ void RemoveCkov(TString sKineFile = "o2sim_Kine.root")
         mcbr->GetEntry(ient);
         mcnewbr->GetEntry(ient);
 
-	headerbr->GetEntry(ient);
+        headerbr->GetEntry(ient);
         refbr->GetEntry(ient);
         //irefbr->GetEntry(ient);
 
