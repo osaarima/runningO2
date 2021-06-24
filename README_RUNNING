@@ -57,6 +57,8 @@ This is done in three stages to clarify different parts:
                        Note: This macro is given as an argument to the submit.sh so you can
                        create your own and combine different inside_container macros if you
                        wish.
+                       Note: If you create a new inside_container.sh yourself, remember to
+                       set 'chmod 740 inside_container.sh' before running.
 
 Try to estimate the number of cores and memory accordingly before launching massive jobs.
 General rule is that CPU's are expensive, memory and space is cheap.
