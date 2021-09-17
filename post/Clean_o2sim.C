@@ -319,7 +319,8 @@ bool isHadron(int particleid);
 
 void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
 
-    bool DEBUG = false;
+    //DEBUG=0: no debug, 1: end debug, 2: all particles debug
+    int DEBUG = 0;
     TString inFileName(Form("%s/o2sim_Kine.root", sFolder.Data()));
     TFile *fIn = TFile::Open(inFileName);
     TTree* kineTree = (TTree*)fIn->Get("o2sim");
@@ -339,7 +340,6 @@ void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
 
     // The order of fOut, ntuple, fOutQC, and histos is important!
     TFile *fOut = new TFile(sOutFileName, "RECREATE");
-    //TNtuple *ntuple = new TNtuple("amptEvents", "detector simulated ampt data", "eventId:particleId:px:py:pz:E:charge:isHadron");
     auto newTree = kineTree->CloneTree(0);
     std::vector<o2::MCTrack>* mctracknew = nullptr;
     auto mcnewbr = newTree->GetBranch("MCTrack");
@@ -350,9 +350,7 @@ void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
     TFile *fOutQC = new TFile(sQCname,"RECREATE");
 
     CleanQCHistos *h = new CleanQCHistos();
-    cout << h << endl;
     h->CreateQCHistos();
-
 
     int particleid, particleidAbs;
     double px, py, pz, E, rap;//, x, y, z, t;
@@ -371,22 +369,16 @@ void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
     int itrackcount=0;
     int iprimarycount=0;
 
-    //TDatabasePDG *pdg = new TDatabasePDG();
-    //TString sPdgTable = gSystem->GetFromPipe("echo $ROOTSYS/etc/pdg_table.txt");
-    //pdg->ReadPDGtable(sPdgTable.Data());
     TParticlePDG *pdgParticle;
     TParticle tparticle;
     TMCParticle *tmcpart;
 
-    int test = 0;
-    //int cops = 0;
     for (UInt_t ient = 0; ient < nEntries; ient++) {
 	std::cout << "Entry " << ient << std::endl;
 	h->fh_eventInfo->Fill("events",1.0);
 	mcbr->GetEntry(ient);
 	headerbr->GetEntry(ient);
 	mcnewbr->GetEntry(ient);
-	test=0;
 	//o2::MCTrack track;
 	for (auto &track : *mctrack) {
 	//for (int i=0; i<mctrack->size(); i++) {
@@ -444,41 +436,12 @@ void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
 	    if(options.Contains("ampt",TString::kIgnoreCase)) {
 		//cout << "getpt" << endl;
 		if(track.GetPt()!=0) {
-		    if(/*pidPos==15      || pidPos==21      || pidPos==113     || pidPos==213     || pidPos==221     ||
-		       pidPos==223     || pidPos==311     || pidPos==313     || pidPos==315     || pidPos==323     ||
-		       pidPos==325     || pidPos==331     || pidPos==333     || pidPos==411     || pidPos==413     || 
-		       pidPos==421     || pidPos==423     || pidPos==431     || pidPos==433     || pidPos==435     ||
-		       pidPos==441     || pidPos==443     || pidPos==445     || pidPos==511     || pidPos==513     ||
-		       pidPos==521     || pidPos==523     || pidPos==531     || pidPos==533     || pidPos==553     ||
-		       pidPos==555     || pidPos==990     || pidPos==1103    || pidPos==1114    || pidPos==2101    ||
-		       pidPos==2103    || pidPos==2114    || pidPos==2203    || pidPos==2214    || pidPos==2224    ||
-		       pidPos==3101    || pidPos==3103    || pidPos==3114    || pidPos==3201    || pidPos==3203    ||
-		       pidPos==3214    || pidPos==3224    || pidPos==3312    || pidPos==3314    || pidPos==3322    ||
-		       pidPos==3324    || pidPos==3334    || pidPos==4112    || pidPos==4114    || pidPos==4122    ||
-		       pidPos==4132    || pidPos==4212    || pidPos==4214    || pidPos==4222    || pidPos==4224    ||
-		       pidPos==4232    || pidPos==4312    || pidPos==4314    || pidPos==4324    || pidPos==5122    ||
-		       pidPos==5132    || pidPos==5214    || pidPos==5222    || pidPos==5224    || pidPos==5232    ||
-		       pidPos==5303    || pidPos==10221   || pidPos==10311   || pidPos==10313   || pidPos==10321   ||
-		       pidPos==10323   || pidPos==10423   || pidPos==10433   || pidPos==10441   || pidPos==10551   ||
-		       pidPos==20213   || pidPos==20313   || pidPos==20413   || pidPos==20423   || pidPos==20433   ||
-		       pidPos==20443   || pidPos==20553   || pidPos==100443  || pidPos==9000211 || pidPos==9010221 ||
-		       pidPos==9902210 || pidPos==9940003 || pidPos==9941103 || pidPos==9942003 || pidPos==9942103 ||
-		       pidPos==9950003 || pidPos==111     || pidPos==211     || pidPos==2212    || pidPos==321     ||
-		       pidPos==2112    || pidPos==11      || pidPos==13      || pidPos==22      || pidPos==130     ||
-		       pidPos==310*/
-			isHadron(pidPos) || pidPos==22 || pidPos==11 || pidPos==13
-		      ){
-			//cout << "tset101" << TMCProcess::kPPrimary << endl;
+		    if(isHadron(pidPos) || pidPos==22 || pidPos==11 || pidPos==13){
 			track.setProcess(TMCProcess::kPPrimary);
-			//cout << "tset102" << endl;
 		    } else{
-			//cout << "tset111 " << TMCProcess::kPNoProcess << endl;
-			//track.setProcess(0);
 			track.setProcess(TMCProcess::kPNoProcess);
-			//cout << "tset112 " << endl;
 		    }
 		} else {
-		    //track.setProcess(0);
 		    track.setProcess(TMCProcess::kPNoProcess);
 		}
 	    }
@@ -498,8 +461,6 @@ void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
 		h->fh_PIDisPrimaryFraction->Fill(TMath::Abs(track.GetPdgCode()));
 		h->fh_eventInfo->Fill("isPrimary tracks",1.0);
 		if(track.Px()!=0.0 || track.Py()!=0.0) {
-		    //if(cops==0) track.Paint();
-		    //cops++;
 		    h->fh_PIDisPrimaryAndPtFraction->Fill(TMath::Abs(track.GetPdgCode()));
 		}
 	    }
@@ -507,24 +468,20 @@ void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
 		h->fh_eventInfo->Fill("isPP tracks",1.0);
 		h->fh_PIDisPPFraction->Fill(TMath::Abs(track.GetPdgCode()));
 	    }
-	    
-	    if(((ishadron && charge!=0) || particleidAbs==22 || particleidAbs==11 || particleidAbs==13 || particleidAbs==15) && isPP/*track.isPrimary()*/) {
+	    if(isPP) {
 		h->fh_eventInfo->Fill("clean tracks",1.0);
 		px = track.Px(); // mStartVertexMomentumX
 		py = track.Py(); // mStartVertexMomentumY
 		pz = track.Pz(); // mStartVertexMomentumZ
 		E = track.GetEnergy(); 
-		h->fillForDetectors(h->fh_pt, rap, track.GetPt());
+		h->fillForDetectors(h->fh_pt,  rap, track.GetPt());
 		h->fillForDetectors(h->fh_eta, rap, track.GetEta());
 		h->fillForDetectors(h->fh_phi, rap, track.GetPhi());
-		h->fillForDetectors(h->fh_pz, rap, TMath::Abs(track.Pz()));
+		h->fillForDetectors(h->fh_pz,  rap, TMath::Abs(track.Pz()));
 		h->fillForDetectors(h->fh_PID, rap, TMath::Abs(track.GetPdgCode()));
 		mctracknew->push_back(track);
-		test++;
 		iprimarycount++;
-		//if(!((px==0)&&(py==0))){ //Definition of primary particle in TAmpt.cxx
-		if(DEBUG) {
-		    //cout << "I have non-zero transverse momentum!" << endl;
+		if(DEBUG>1) {
 		    cout << "ParticleID: " << particleid
 			//<< ", UniqueID: " << track.GetUniqueID()
 			<< ", FirstdaugID: " << track.getFirstDaughterTrackId()
@@ -535,26 +492,24 @@ void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
 			<< ", hasHits: " << track.hasHits()
 			<< endl;
 		}
-		//} else {
-		//ntuple->Fill(ient, particleid, px, py, pz, E, charge, ishadron);
-		//}
 	    }
 	}
 	newTree->Fill();
 	mctracknew->clear();
     }
-    for (int i=0; i<h->fh_PIDisPPFraction->GetNbinsX(); i++) {
-	if(h->fh_PIDAllParticles[0]->GetBinContent(i)!=0 /*&& h->fh_PIDisPrimaryFraction->GetBinContent(i)/h->fh_PIDAllParticles[0]->GetBinContent(i)>0.9*/) {
-	    int pid=TMath::FloorNint(h->fh_PIDisPPFraction->GetBinCenter(i));
-	    TString stable, lifetime;
-	    if(TDatabasePDG::Instance()->GetParticle(pid)==0){
-		stable="?";
-		lifetime=Form("%6s","?");
-	    } else {
-		stable=Form("%d",TDatabasePDG::Instance()->GetParticle(pid)->Stable());
-		lifetime=Form("%6.3f",1000000000*TDatabasePDG::Instance()->GetParticle(pid)->Lifetime()); //ns
-	    }
-	    cout << Form("PID: %7.d (s:%s,l:%s), isPP: %7.f (%1.3f), isPrimary: %7.f (%1.3f), isP & pt!=0: %7.f (%1.3f), total: %7.f",
+    if(DEBUG>0) {
+	for (int i=0; i<h->fh_PIDisPPFraction->GetNbinsX(); i++) {
+	    if(h->fh_PIDAllParticles[0]->GetBinContent(i)!=0 /*&& h->fh_PIDisPrimaryFraction->GetBinContent(i)/h->fh_PIDAllParticles[0]->GetBinContent(i)>0.9*/) {
+		int pid=TMath::FloorNint(h->fh_PIDisPPFraction->GetBinCenter(i));
+		TString stable, lifetime;
+		if(TDatabasePDG::Instance()->GetParticle(pid)==0){
+		    stable="?";
+		    lifetime=Form("%6s","?");
+		} else {
+		    stable=Form("%d",TDatabasePDG::Instance()->GetParticle(pid)->Stable());
+		    lifetime=Form("%6.3f",1000000000*TDatabasePDG::Instance()->GetParticle(pid)->Lifetime()); //ns
+		}
+		cout << Form("PID: %7.d (s:%s,l:%s), isPP: %7.f (%1.3f), isPrimary: %7.f (%1.3f), isP & pt!=0: %7.f (%1.3f), total: %7.f",
 		    pid,
 		    stable.Data(),
 		    lifetime.Data(),
@@ -565,16 +520,16 @@ void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
 		    h->fh_PIDisPrimaryAndPtFraction->GetBinContent(i),
 		    h->fh_PIDisPrimaryAndPtFraction->GetBinContent(i)/h->fh_PIDAllParticles[0]->GetBinContent(i),
 		    h->fh_PIDAllParticles[0]->GetBinContent(i)) << endl;
+	    }
 	}
-
+	h->fh_PIDisPrimaryFraction->Divide(h->fh_PIDAllParticles[0]);
+	h->fh_PIDisPPFraction->Divide(h->fh_PIDAllParticles[0]);
+	std::cout << "Tracks: " << itrackcount << std::endl;
+	std::cout << "Primaries: " << iprimarycount << std::endl;
+	std::cout << "pions: " << pionCounter << ", pion isPP: " << pionIsPPCounter << std::endl;
+	std::cout << "Kaons: " << kaonCounter << ", Kaon isPP: " << kaonIsPPCounter << std::endl;
+	std::cout << "prots: " << protCounter << ", prot isPP: " << protIsPPCounter << std::endl;
     }
-    h->fh_PIDisPrimaryFraction->Divide(h->fh_PIDAllParticles[0]);
-    h->fh_PIDisPPFraction->Divide(h->fh_PIDAllParticles[0]);
-    std::cout << "Tracks: " << itrackcount << std::endl;
-    std::cout << "Primaries: " << iprimarycount << std::endl;
-    std::cout << "pions: " << pionCounter << ", pion isPP: " << pionIsPPCounter << std::endl;
-    std::cout << "Kaons: " << kaonCounter << ", Kaon isPP: " << kaonIsPPCounter << std::endl;
-    std::cout << "prots: " << protCounter << ", prot isPP: " << protIsPPCounter << std::endl;
     fOut->Write();
     fOut->Close();
     fOutQC->Write();
