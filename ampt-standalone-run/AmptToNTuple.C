@@ -13,13 +13,12 @@ bool isHadron(int particleid) {
     return true;
 }
 
-void AmptToNTuple(int jobNumber, int eventStartId) {
+void AmptToNTuple(TString sFolder, TString sOutput, int eventStartId) {
 
-    TString inFileName(Form("ampt%01i.dat", jobNumber));
+    TString inFileName(Form("%s/ampt.dat", sFolder.Data()));
     FILE *fIn = fopen(inFileName, "r");
 
-    TString outFileName(Form("ampt-output%02i.root", jobNumber));
-    TFile *fOut = new TFile(outFileName, "RECREATE");
+    TFile *fOut = new TFile(sOutput, "RECREATE");
 
     bool bSaveb = 0;
 
