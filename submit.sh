@@ -9,11 +9,11 @@
 # small= 3days, 40tasks,   1node,  382GiB max memory, 3600GiB max storage
 # large= 3days, 1040tasks, 26node, 382GiB max memory, 3600GiB max storage
 #SBATCH --partition=small
-#SBATCH --time=2:00:00
+#SBATCH --time=48:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=6000
+#SBATCH --mem-per-cpu=18000
 #SBATCH --mail-type=END #uncomment to enable mail
 #SBATCH --array=1-100 #defines SLURM_ARRAY_TASK_ID
 # If you change output/error here, please change
@@ -21,7 +21,7 @@
 #SBATCH --output=logs/output_%A-run%a.txt
 #SBATCH --error=logs/errors_%A-run%a.txt
 
-## 5 AMPT events: ~20 min
+## 5 AMPT events: ~30 min
 
 #time 8, ntasks 1, nodes 1, array 100, cpu 4, mem/cpu 4G
 #Job ID: 5295754
@@ -95,11 +95,12 @@ comment=$1
 nevents=$2
 digitizerHz=$3
 digitizerComment=$4
-insideMacro=$5
+seedBase=$5
+insideMacro=$6
 
 #nCPUS=1
 collSystem=PbPb
-o2Version=21-06-10
+o2Version=21-09-20
 dig=${digitizerHz}Hz-${digitizerComment}
 
 n=$SLURM_ARRAY_TASK_ID
@@ -111,8 +112,8 @@ echo "Starting Slurm array job ${SLURM_ARRAY_JOB_ID}, task ${SLURM_ARRAY_TASK_ID
 mkdir -p $outputdir
 mkdir -p $outputdirDigit
 mkdir -p ${outputdir}/logs
-/projappl/project_2003583/simO2/runningO2/run $outputdir $outputdirDigit $nevents $digitizerHz $insideMacro
+/projappl/project_2003583/simO2/runningO2/run $outputdir $outputdirDigit $nevents $digitizerHz $seedBase $insideMacro
 sleep 1
-cp logs/output_${SLURM_ARRAY_JOB_ID}-run${SLURM_ARRAY_TASK_ID}.txt $outputdir/logs/
-cp logs/errors_${SLURM_ARRAY_JOB_ID}-run${SLURM_ARRAY_TASK_ID}.txt $outputdir/logs/
+mv logs/output_${SLURM_ARRAY_JOB_ID}-run${SLURM_ARRAY_TASK_ID}.txt $outputdir/logs/
+mv logs/errors_${SLURM_ARRAY_JOB_ID}-run${SLURM_ARRAY_TASK_ID}.txt $outputdir/logs/
 sleep 1
