@@ -1,8 +1,28 @@
 #!/bin/bash
+## sbatch will check arguments from the comments in the
+## beginning of this file.
+#SBATCH --job-name=simo2_SAmpt_osanmasa
+#SBATCH --account=project_2003583
+# partition explained here: https://docs.csc.fi/computing/running/batch-job-partitions/
+# test = 15min, 80tasks,   2node,  382GiB max memory, 3600GiB max storage
+# small= 3days, 40tasks,   1node,  382GiB max memory, 3600GiB max storage
+# large= 3days, 1040tasks, 26node, 382GiB max memory, 3600GiB max storage
+#SBATCH --partition=small
+#SBATCH --time=4:00:00
+#SBATCH --ntasks=1
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=18000
+#SBATCH --mail-type=END #uncomment to enable mail
+#SBATCH --array=1-2 #defines SLURM_ARRAY_TASK_ID
+# If you change output/error here, please change
+# the cp command at the end of this macro
+#SBATCH --output=logs/output_%A-run%a.txt
+#SBATCH --error=logs/errors_%A-run%a.txt
 
 if [ "$1" == "-h" ]
 then
-    echo "Usage: `basename $0` comment njobs[=1] nevents[=1] energy[=50 (give in GeV)] bmin[=6.05 (give in fm)] bmax[=6.98 (give in fm)]"
+    echo "Usage: `basename $0` comment nevents[=1] energy[=5500 (give in GeV)] bmin[=6.99 (give in fm)] bmax[=8.56 (give in fm)] seedbase[=1000]"
     exit 0
 fi
 
@@ -16,46 +36,56 @@ source setup.sh
 
 if [ -z "$2" ]
 then
-    njobs=1
+    nevents=1
 else
-    njobs=$2
+    nevents=$2
 fi
 
 if [ -z "$3" ]
 then
-    nevents=1
+    energy=5500
 else
-    nevents=$3
+    energy=$3
 fi
 
 if [ -z "$4" ]
 then
-    energy=50
+    bmin=6.99
 else
-    energy=$4
+    bmin=$4
 fi
 
 if [ -z "$5" ]
 then
-    bmin=6.05
+    bmax=8.56
 else
-    bmin=$5
+    bmax=$5
 fi
 
 if [ -z "$6" ]
 then
-    bmax=6.98
+    seedbase=1000
 else
-    bmax=$6
+    seedbase=$6
 fi
 
-outputdir=run_${1}_n$(($njobs * $nevents))_${energy}GeV
+echo "Starting Slurm array job ${SLURM_ARRAY_JOB_ID}, task ${SLURM_ARRAY_TASK_ID}"
+
+collSystem=PbPb
+o2Version=21-09-20
+#dig=${digitizerHz}Hz-${digitizerComment}
+
+n=$SLURM_ARRAY_TASK_ID
+
+outputdir=/scratch/project_2003583/simO2_outputs/${collSystem}_StandaloneAMPT_o2ver-${o2Version}_${comment}_${energy}GeV/sim/run_job$n
+
 mkdir $outputdir
+#mkdir -p $outputdirDigit
 mkdir ${outputdir}/logs
 
-for (( i=1; i<=$njobs; i++ ))
-do
-    eventfirst=$(((i-1)*nevents))
-    sbatch -o ${outputdir}/logs/log$i -e ${outputdir}/logs/errout$i -J ampt -n 1 run $i $eventfirst $nevents $energy $bmin $bmax $outputdir
-    sleep 1
-done
+eventfirst=$(((${n}-1)*nevents))
+run $eventfirst $nevents $energy $bmin $bmax $outputdir $seedbase
+
+sleep 1
+mv logs/output_${SLURM_ARRAY_JOB_ID}-run${SLURM_ARRAY_TASK_ID}.txt $outputdir/logs/
+mv logs/errors_${SLURM_ARRAY_JOB_ID}-run${SLURM_ARRAY_TASK_ID}.txt $outputdir/logs/
