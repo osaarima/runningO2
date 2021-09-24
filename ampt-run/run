@@ -1,0 +1,40 @@
+#!/bin/bash
+
+amptdir=$AMPT_DIR/Ampt/
+amptrundir=$AMPT_DIR/ampt-run/
+tempdir=${amptrundir}ampt_job_${1}
+
+mkdir -p ${tempdir}/ana
+cp -a ${amptdir}. ${tempdir}
+cd $tempdir
+seed=1000
+jobid=$SLURM_JOB_ID
+seed=$((seed+jobid))
+sed -i "1s/.*/${4}     ! EFRM (sqrt(S_NN) in GeV if FRAME is CMS)/" input.ampt
+sed -i "9s/.*/${3}     ! NEVNT (total number of events)/" input.ampt
+sed -i "10s/.*/${5}     ! BMIN (mininum impact parameter in fm)/" input.ampt
+sed -i "11s/.*/${6}     ! BMAX (maximum impact parameter in fm, also see below)/" input.ampt
+sed -i "28s/.*/0     ! ihjsed: take HIJING seed from below (D=0) or at runtime(11)/" input.ampt
+sed -i "29s/.*/${seed}     ! random seed for HIJING/" input.ampt
+
+time=$(date)
+echo "Start time : $time"
+
+echo "Executing job number ${1} with seed ${seed}.."
+./exec
+echo "Done!"
+cd ana
+mv ampt.dat ${amptrundir}ampt${1}.dat
+cd ${amptrundir}
+echo "Run root macro.."
+root -b -q -l "AmptToNTuple.C(${1}, ${2})"
+echo "Done!"
+
+time=$(date)
+echo "End time : $time"
+
+jobnum=$(printf "%02d" $1)
+mv ampt-output${jobnum}.root ${7}/ampt-output${jobnum}.root
+
+rm -r $tempdir
+rm ampt${1}.dat

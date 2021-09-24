@@ -2,7 +2,7 @@ alienv enter O2/latest-dev-o2,AliRoot/latest-master-o2
 
 o2-sim -j 1 --seed 1000 -n 2 -m FV0 FT0 ITS PIPE MFT -g external --configKeyValues 'GeneratorExternal.fileName=/alicesw/O2/run/SimExamples/AliRoot_AMPT/aliroot_ampt.macro;GeneratorExternal.funcName=ampt(5500., 6.99, 8.56 )'
 o2-sim -j 1 --seed 1000 -n 2 -m FV0 FT0 ITS PIPE MFT -g pythia8hi --configKeyValues "GeneratorPythia8.config=../pythia8_hi.cfg"
-o2-sim -j 1 --seed 1000 -n 2 -m FV0 FT0 ITS PIPE MFT -g external --configKeyValues 'GeneratorExternal.fileName=/home/alidock/cernbox/ToyFlowHeidi/simO2/runningO2/gengen.C;GeneratorExternal.funcName=gengen("\"${DETSIM_DIR}\/${2}\"")'
+o2-sim -j 1 --seed 1000 -n 2 -m FV0 FT0 ITS PIPE MFT -g external --configKeyValues 'GeneratorExternal.fileName=/home/osaarima/cernbox/ToyFlowHeidi/simO2/gengen.C;GeneratorExternal.funcName=gengen("../testdir/ampt-output00.root", "ampt")'
 
 
 o2-sim-digitizer-workflow -b --onlyDet=FV0,FT0 --interactionRate 5

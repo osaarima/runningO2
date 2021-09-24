@@ -1,0 +1,1 @@
+export AMPT_DIR=/PUT_RELEVANT_PATH_HERE/AMPT-production/

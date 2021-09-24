@@ -320,7 +320,7 @@ bool isHadron(int particleid);
 void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
 
     //DEBUG=0: no debug, 1: end debug, 2: all particles debug
-    int DEBUG = 0;
+    int DEBUG = 1;
     TString inFileName(Form("%s/o2sim_Kine.root", sFolder.Data()));
     TFile *fIn = TFile::Open(inFileName);
     TTree* kineTree = (TTree*)fIn->Get("o2sim");
@@ -336,7 +336,6 @@ void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
     UInt_t nEntries = kineTree->GetEntries();
     //nEntries=10;
     std::cout << "MC events : " << nEntries << std::endl;
-
 
     // The order of fOut, ntuple, fOutQC, and histos is important!
     TFile *fOut = new TFile(sOutFileName, "RECREATE");
