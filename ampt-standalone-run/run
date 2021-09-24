@@ -1,20 +1,24 @@
 #!/bin/bash
 
+#Setup arguments (those with export are needed inside containers)
 jobNumber=${SLURM_ARRAY_TASK_ID}
 export frstEvt=${1}
 export Nevt=${2}
 energy=${3}
 bmin=${4}
 bmax=${5}
-finalOutputDir=${6}
-seedBase=${7}
+export dir=${6}
+export dirDigit=${7}
+seedBase=${8}
 
+#Setup dirs
 amptdir=$AMPT_DIR
-export amptrundir=$AMPT_DIR/../ampt-run
+export amptrundir=$AMPT_DIR/../ampt-standalone-run
 #The format of the folder name is important:
 #if you change this, change also inside_container_standalone_ampt.sh
 export amptTempDir=${TMPDIR}/ampt_job_${jobNumber}
 
+#Create temp dir in fast disc and move AMPT there
 mkdir -p ${amptTempDir}/ana
 cp -a ${amptdir}/. ${amptTempDir}
 cd $amptTempDir
@@ -32,31 +36,19 @@ echo "Start time : $time"
 
 echo "Executing job number ${jobNumber} with seed ${seed}.."
 
-
-#Tähän tulee singularity-juttuja, nää alemmat vois ehkä laittaa insidecontainer tiedostoihin.
-
 # Settings for singularity:
 export SINGULARITY_BIND="/projappl/project_2003583,/scratch/project_2003583,$TMPDIR"
 export SINGULARITY_SHELL="/bin/bash --norc"
 export SINGULARITY_CACHEDIR=$TMPDIR
 
+export currentDir=$(pwd)
+
 singularity exec --home $HOME --workdir $TMPDIR /projappl/project_2003583/alidockSingularity_alisw-slc7_21_09_20.sif /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/inside_container_standalone_ampt.sh
-
-rm ${amptTempDir}/ana/ampt.dat
-
-singularity exec --home $HOME --workdir $TMPDIR /projappl/project_2003583/alidockSingularity_alisw-slc7_21_09_20.sif /projappl/project_2003583/simO2/runningO2/inside_container_ampt.sh
-
-
-
 
 echo "Done!"
 
+#$TMPDIR will be removed automatically
+#rm -r $amptTempDir
+
 time=$(date)
 echo "End time : $time"
-
-jobNumFormat=$(printf "%02d" ${jobNumber})
-
-mv ${amptTempDir}/ana/ampt.root ${finalOutputDir}/ampt-output${jobNumFormat}.root
-
-rm -r $amptTempDir
-rm ampt${jobNumber}.dat

@@ -73,18 +73,19 @@ echo "Starting Slurm array job ${SLURM_ARRAY_JOB_ID}, task ${SLURM_ARRAY_TASK_ID
 
 collSystem=PbPb
 o2Version=21-09-20
-#dig=${digitizerHz}Hz-${digitizerComment}
+dig=${digitizerHz}Hz-${digitizerComment}
 
 n=$SLURM_ARRAY_TASK_ID
 
 outputdir=/scratch/project_2003583/simO2_outputs/${collSystem}_StandaloneAMPT_o2ver-${o2Version}_${comment}_${energy}GeV/sim/run_job$n
+outputdirDigit=/scratch/project_2003583/simO2_outputs/${collSystem}_StandaloneAMPT_o2ver-${o2Version}_${comment}_${energy}GeV/dig_${dig}/run_job$n
 
 mkdir $outputdir
 #mkdir -p $outputdirDigit
 mkdir ${outputdir}/logs
 
 eventfirst=$(((${n}-1)*nevents))
-run $eventfirst $nevents $energy $bmin $bmax $outputdir $seedbase
+run $eventfirst $nevents $energy $bmin $bmax $outputdir $outputdirDigit $seedbase
 
 sleep 1
 mv logs/output_${SLURM_ARRAY_JOB_ID}-run${SLURM_ARRAY_TASK_ID}.txt $outputdir/logs/
