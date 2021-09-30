@@ -9,11 +9,11 @@
 # small= 3days, 40tasks,   1node,  382GiB max memory, 3600GiB max storage
 # large= 3days, 1040tasks, 26node, 382GiB max memory, 3600GiB max storage
 #SBATCH --partition=small
-#SBATCH --time=48:00:00
+#SBATCH --time=12:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=18000
+#SBATCH --mem-per-cpu=8000
 #SBATCH --mail-type=END #uncomment to enable mail
 #SBATCH --array=1-100 #defines SLURM_ARRAY_TASK_ID
 # If you change output/error here, please change
@@ -79,11 +79,17 @@ fi
 
 if [ -z "$5" ]
 then
+    echo "Please give seed base number."
+    return 0
+fi
+
+if [ -z "$6" ]
+then
     echo "Please give the full path of the macro that will be used inside the container."
     return 0
 fi
 
-if [[ $5 != /* ]]
+if [[ $6 != /* ]]
 then
     echo "Please give the full path of the macro that will be used inside the container."
     return 0
@@ -97,15 +103,19 @@ digitizerHz=$3
 digitizerComment=$4
 seedBase=$5
 insideMacro=$6
+energy=5500
 
 #nCPUS=1
 collSystem=PbPb
 o2Version=21-09-20
 dig=${digitizerHz}Hz-${digitizerComment}
 
+#Comment this out if not using Standalone AMPT (for the purposes of doing post or digitizer only.)
+standaloneFlag=StandaloneAMPT_
+
 n=$SLURM_ARRAY_TASK_ID
-outputdir=/scratch/project_2003583/simO2_outputs/${collSystem}_o2ver-${o2Version}_${comment}/sim/run_job$n
-outputdirDigit=/scratch/project_2003583/simO2_outputs/${collSystem}_o2ver-${o2Version}_${comment}/dig_${dig}/run_job$n
+outputdir=/scratch/project_2003583/simO2_outputs/${collSystem}_${standaloneFlag}o2ver-${o2Version}_${comment}_${energy}GeV/sim/run_job$n
+outputdirDigit=/scratch/project_2003583/simO2_outputs/${collSystem}_${standaloneFlag}o2ver-${o2Version}_${comment}_${energy}GeV/dig_${dig}/run_job$n
 
 echo "Starting Slurm array job ${SLURM_ARRAY_JOB_ID}, task ${SLURM_ARRAY_TASK_ID}"
 

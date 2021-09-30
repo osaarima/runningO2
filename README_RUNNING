@@ -32,8 +32,8 @@ o2-sim -j 1 --seed 1000 -n 2 -m FV0 FT0 ITS PIPE MFT -g pythia8hi --configKeyVal
 # Digitizer:
 o2-sim-digitizer-workflow -b --onlyDet=FV0,FT0 --interactionRate 5
 
------------------------=====================-----------------------
 
+-----------------------=====================-----------------------
 
 
 For running with batch job you can look at the examples 'submit.sh', 'run', and 'inside_container.sh'
@@ -71,3 +71,12 @@ sbatch submit.sh testName 2 5 default /projappl/project_2003583/simO2/runningO2/
 If you want to run only the digitizer for an existing run, you can just give the submit.sh the digitizer
 inside container macro so only that will be launched:
 sbatch submit.sh testName 2 1e3 newDigitizerTest /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh
+
+
+-----------------------=====================-----------------------
+
+
+Running with standalone AMPT is done with macros and files in the folder ampt-standalone-run. The
+idea is the same as normally, but additional steps are required in the 'run' file, as we need to use
+the temporary folder for the standalone AMPT output, then convert it to root file, and in the end
+feed the root file to O2.
