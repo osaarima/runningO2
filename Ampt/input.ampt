@@ -45,7 +45,7 @@ A               ! TARG
 1, 5., 0.       ! nsembd(D=0), psembd (in GeV),tmaxembd (in radian).
 0 		! Flag to enable users to modify shadowing (D=0,no; 1,yes)
 1.d0		! Factor used to modify nuclear shadowing
-0		! Flag for random orientation of reaction plane (D=0,no; 1,yes)
+1		! Flag for random orientation of reaction plane (D=0,no; 1,yes)
 
 %%%%%%%%%% Further explanations:
 BMAX:   the upper limit HIPR1(34)+HIPR1(35)=19.87fm (dAu), 25.60fm(AuAu).

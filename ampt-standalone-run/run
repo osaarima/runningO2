@@ -5,22 +5,30 @@ jobNumber=${SLURM_ARRAY_TASK_ID}
 export frstEvt=${1}
 export Nevt=${2}
 energy=${3}
-bmin=${4}
-bmax=${5}
-export dir=${6}
-export dirDigit=${7}
-seedBase=${8}
+export digHz=${4}
+bmin=${5}
+bmax=${6}
+export dir=${7}
+export dirDigit=${8}
+seedBase=${9}
+
+echo Initialize a run with first event $frstEvt, total events: $Nevt
+echo energy: $energy, digitizer freq: $digHz, bmin: $bmin, bmax: $bmax
+echo in dir: $dir
+echo with digit dir: $dirDigit
+echo and with base seed: $seedBase
 
 #Setup dirs
 amptdir=$AMPT_DIR
-export amptrundir=$AMPT_DIR/../ampt-standalone-run
+export amptrundir=${AMPT_DIR}/../ampt-standalone-run
 #The format of the folder name is important:
 #if you change this, change also inside_container_standalone_ampt.sh
-export amptTempDir=${TMPDIR}/ampt_job_${jobNumber}
+export amptTempDir=${LOCAL_SCRATCH}/ampt_job_${jobNumber}
 
 #Create temp dir in fast disc and move AMPT there
-mkdir -p ${amptTempDir}/ana
-cp -a ${amptdir}/. ${amptTempDir}
+mkdir -p ${amptTempDir}
+#mkdir -p ${amptTempDir}/ana
+cp -a ${amptdir}/. ${amptTempDir}/
 cd $amptTempDir
 
 export seed=$((seedBase+jobNumber))
@@ -31,23 +39,25 @@ sed -i "11s/.*/${bmax}     ! BMAX (maximum impact parameter in fm, also see belo
 sed -i "28s/.*/0     ! ihjsed: take HIJING seed from below (D=0) or at runtime(11)/" input.ampt
 sed -i "29s/.*/${seed}     ! random seed for HIJING/" input.ampt
 
+cp input.ampt ${dir}/
+
 time=$(date)
 echo "Start time : $time"
 
 echo "Executing job number ${jobNumber} with seed ${seed}.."
 
 # Settings for singularity:
-export SINGULARITY_BIND="/projappl/project_2003583,/scratch/project_2003583,$TMPDIR"
+export SINGULARITY_BIND="/projappl/project_2003583,/scratch/project_2003583,$LOCAL_SCRATCH"
 export SINGULARITY_SHELL="/bin/bash --norc"
-export SINGULARITY_CACHEDIR=$TMPDIR
+export SINGULARITY_CACHEDIR=$LOCAL_SCRATCH
 
 export currentDir=$(pwd)
 
-singularity exec --home $HOME --workdir $TMPDIR /projappl/project_2003583/alidockSingularity_alisw-slc7_21_09_20.sif /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/inside_container_standalone_ampt.sh
+singularity exec --home $HOME --workdir $LOCAL_SCRATCH /projappl/project_2003583/alidockSingularity_alisw-slc7_21_09_20.sif /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/inside_container_standalone_ampt.sh
 
 echo "Done!"
 
-#$TMPDIR will be removed automatically
+#$LOCAL_SCRATCH will be removed automatically
 #rm -r $amptTempDir
 
 time=$(date)

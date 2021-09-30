@@ -268,11 +268,11 @@ class CleanQCHistos {
 		fh_phiAllParticles[i]->Sumw2();
 
 		fd_eta->cd();
-		fh_eta[i]             = new TH1D(Form("h_eta%s",detName[i].Data()),    Form("h_eta%s",detName[i].Data()),    30,  -5, 5);
+		fh_eta[i]             = new TH1D(Form("h_eta%s",detName[i].Data()),    Form("h_eta%s",detName[i].Data()),    45,  -7, 7);
 		fh_eta[i]->Sumw2();
 
 		fd_etaAllParticles->cd();
-		fh_etaAllParticles[i] = new TH1D(Form("h_etaAllParticles%s",detName[i].Data()), Form("h_etaAllParticles%s",detName[i].Data()), 30,  -5, 5);
+		fh_etaAllParticles[i] = new TH1D(Form("h_etaAllParticles%s",detName[i].Data()), Form("h_etaAllParticles%s",detName[i].Data()), 45,  -7, 7);
 		fh_etaAllParticles[i]->Sumw2();
 
 		fd_pz->cd();
@@ -304,9 +304,9 @@ class CleanQCHistos {
 
 	}
 
-	void fillForDetectors(TH1D** h, double rap, double fill, double weight=1.0) {
+	void fillForDetectors(TH1D** h, double eta, double fill, double weight=1.0) {
 	    for (int i=0; i<DET_N; i++) {
-		if ( i==0 || (cov[i][0]<rap && cov[i][1]>rap) )
+		if ( i==0 || (cov[i][0]<eta && cov[i][1]>eta) )
 		    h[i]->Fill(fill,weight);
 	    }
 	    //cout << "CleanQCHistos WARNING: No detector found" << endl;
@@ -352,7 +352,7 @@ void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
     h->CreateQCHistos();
 
     int particleid, particleidAbs;
-    double px, py, pz, E, rap;//, x, y, z, t;
+    double px, py, pz, E, eta;//, x, y, z, t;
     double charge;
     bool ishadron;
     int kS, parent, firstchild, lastchild;
@@ -407,12 +407,12 @@ void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
 	    } else {
 		charge = TDatabasePDG::Instance()->GetParticle(particleid)->Charge();
 	    }
-	    rap = track.GetRapidity();
-	    h->fillForDetectors(h->fh_ptAllParticles, rap, track.GetPt());
-	    h->fillForDetectors(h->fh_etaAllParticles, rap, track.GetEta());
-	    h->fillForDetectors(h->fh_phiAllParticles, rap, track.GetPhi());
-	    h->fillForDetectors(h->fh_pzAllParticles, rap, TMath::Abs(track.Pz()));
-	    h->fillForDetectors(h->fh_PIDAllParticles, rap, TMath::Abs(track.GetPdgCode()));
+	    eta = track.GetEta();
+	    h->fillForDetectors(h->fh_ptAllParticles, eta, track.GetPt());
+	    h->fillForDetectors(h->fh_etaAllParticles, eta, track.GetEta());
+	    h->fillForDetectors(h->fh_phiAllParticles, eta, track.GetPhi());
+	    h->fillForDetectors(h->fh_pzAllParticles, eta, TMath::Abs(track.Pz()));
+	    h->fillForDetectors(h->fh_PIDAllParticles, eta, TMath::Abs(track.GetPdgCode()));
 
 	    //cout << "tset0" << endl;
 
@@ -467,31 +467,31 @@ void Clean_o2sim(TString sFolder, TString sOutFileName, TString options) {
 		h->fh_eventInfo->Fill("isPP tracks",1.0);
 		h->fh_PIDisPPFraction->Fill(TMath::Abs(track.GetPdgCode()));
 	    }
-	    if(isPP) {
-		h->fh_eventInfo->Fill("clean tracks",1.0);
-		px = track.Px(); // mStartVertexMomentumX
-		py = track.Py(); // mStartVertexMomentumY
-		pz = track.Pz(); // mStartVertexMomentumZ
-		E = track.GetEnergy(); 
-		h->fillForDetectors(h->fh_pt,  rap, track.GetPt());
-		h->fillForDetectors(h->fh_eta, rap, track.GetEta());
-		h->fillForDetectors(h->fh_phi, rap, track.GetPhi());
-		h->fillForDetectors(h->fh_pz,  rap, TMath::Abs(track.Pz()));
-		h->fillForDetectors(h->fh_PID, rap, TMath::Abs(track.GetPdgCode()));
-		mctracknew->push_back(track);
-		iprimarycount++;
-		if(DEBUG>1) {
-		    cout << "ParticleID: " << particleid
-			//<< ", UniqueID: " << track.GetUniqueID()
-			<< ", FirstdaugID: " << track.getFirstDaughterTrackId()
-			<< ", LastdaugID: " << track.getLastDaughterTrackId()
-			<< ", MotherTrackID: " << track.getMotherTrackId()
-			<< ", SecondMotherTrackID: " << track.getSecondMotherTrackId()
-			<< ", getProcess: " << track.getProcess()
-			<< ", hasHits: " << track.hasHits()
-			<< endl;
-		}
-	    }
+        if(isPP) {
+            h->fh_eventInfo->Fill("clean tracks",1.0);
+            px = track.Px(); // mStartVertexMomentumX
+            py = track.Py(); // mStartVertexMomentumY
+            pz = track.Pz(); // mStartVertexMomentumZ
+            E = track.GetEnergy(); 
+            h->fillForDetectors(h->fh_pt,  eta, track.GetPt());
+            h->fillForDetectors(h->fh_eta, eta, track.GetEta());
+            h->fillForDetectors(h->fh_phi, eta, track.GetPhi());
+            h->fillForDetectors(h->fh_pz,  eta, TMath::Abs(track.Pz()));
+            h->fillForDetectors(h->fh_PID, eta, TMath::Abs(track.GetPdgCode()));
+            mctracknew->push_back(track);
+            iprimarycount++;
+            if(DEBUG>1) {
+                cout << "ParticleID: " << particleid
+                    //<< ", UniqueID: " << track.GetUniqueID()
+                    << ", FirstdaugID: " << track.getFirstDaughterTrackId()
+                    << ", LastdaugID: " << track.getLastDaughterTrackId()
+                    << ", MotherTrackID: " << track.getMotherTrackId()
+                    << ", SecondMotherTrackID: " << track.getSecondMotherTrackId()
+                    << ", getProcess: " << track.getProcess()
+                    << ", hasHits: " << track.hasHits()
+                    << endl;
+            }
+        }
 	}
 	newTree->Fill();
 	mctracknew->clear();
