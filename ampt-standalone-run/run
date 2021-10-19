@@ -36,8 +36,10 @@ sed -i "1s/.*/${energy}     ! EFRM (sqrt(S_NN) in GeV if FRAME is CMS)/" input.a
 sed -i "9s/.*/${Nevt}     ! NEVNT (total number of events)/" input.ampt
 sed -i "10s/.*/${bmin}     ! BMIN (mininum impact parameter in fm)/" input.ampt
 sed -i "11s/.*/${bmax}     ! BMAX (maximum impact parameter in fm, also see below)/" input.ampt
+sed -i "15s/.*/0.30        ! PARJ(41): parameter a in Lund symmetric splitting function/" input.ampt
 sed -i "28s/.*/0     ! ihjsed: take HIJING seed from below (D=0) or at runtime(11)/" input.ampt
 sed -i "29s/.*/${seed}     ! random seed for HIJING/" input.ampt
+sed -i "48s/.*/1       ! Flag for random orientation of reaction plane (D=0,no; 1,yes)/" input.ampt
 
 cp input.ampt ${dir}/
 
@@ -53,7 +55,7 @@ export SINGULARITY_CACHEDIR=$LOCAL_SCRATCH
 
 export currentDir=$(pwd)
 
-singularity exec --home $HOME --workdir $LOCAL_SCRATCH /projappl/project_2003583/alidockSingularity_alisw-slc7_21_09_20.sif /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/inside_container_standalone_ampt.sh
+singularity exec --home $HOME --workdir $LOCAL_SCRATCH /projappl/project_2003583/alidockSingularity_alisw-slc7_21-10-12.sif /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/inside_container_standalone_ampt.sh
 
 echo "Done!"
 

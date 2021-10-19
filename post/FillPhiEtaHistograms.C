@@ -29,7 +29,7 @@ void FillPhiEtaHistograms(TString sOutput="inclusive.root", TString name = "5p5T
     hVrtxFT0C->Sumw2();
 
     //TString cmd(Form("ls %s/cent%s*/run_cent%s*/extrafiles/o2sim_Kine_nockov.root", sDirName.Data(), cent.Data(), cent.Data()));
-    TString cmd(Form("ls %s/sim/run_job*/o2sim_Kine_nockov.root", sDirName.Data()));
+    TString cmd(Form("ls %s/sim/run_job*/o2sim_Kine_PPOnly.root", sDirName.Data()));
 
     //alienv setenv O2/latest-dev-o2,AliRoot/latest-master-o2 -c root -b -x -l -q "/projappl/project_2003583/simO2/post_analysis/FillPhiEtaHistograms.C(\"/scratch/project_2003583/simO2_outputs/PbPb_o2ver-21-06-10_MBPythia8hi/phiEtaInclusiveHistos.root\", \"\",0,0,\"/scratch/project_2003583/simO2_outputs/PbPb_o2ver-21-06-10_MBPythia8hi\")";
 

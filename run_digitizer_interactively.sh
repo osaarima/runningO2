@@ -9,6 +9,8 @@
 # and that O2 environment has been entered with this command:
 #alienv enter O2/latest-dev-o2,AliRoot/latest-master-o2
 
+#100*100events took about 9 hours.
+
 rootFolder=$1
 digitizerFolder=$2
 interactionRate=$3

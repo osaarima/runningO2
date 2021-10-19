@@ -93,7 +93,7 @@ source setup.sh
 echo "Starting Slurm array job ${SLURM_ARRAY_JOB_ID}, task ${SLURM_ARRAY_TASK_ID}"
 
 collSystem=PbPb
-o2Version=21-09-20
+o2Version=21-10-12
 dig=${digitizerHz}Hz-${digitizerComment}
 
 n=$SLURM_ARRAY_TASK_ID
