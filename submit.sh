@@ -107,21 +107,24 @@ energy=5500
 
 #nCPUS=1
 collSystem=PbPb
-o2Version=21-09-20
+o2Version=21-10-12
 dig=${digitizerHz}Hz-${digitizerComment}
 
-#Comment this out if not using Standalone AMPT (for the purposes of doing post or digitizer only.)
+#Comment this out if not using Standalone AMPT (this is used for the purposes of doing post or digitizer only.)
 standaloneFlag=StandaloneAMPT_
 
 n=$SLURM_ARRAY_TASK_ID
-outputdir=/scratch/project_2003583/simO2_outputs/${collSystem}_${standaloneFlag}o2ver-${o2Version}_${comment}_${energy}GeV/sim/run_job$n
-outputdirDigit=/scratch/project_2003583/simO2_outputs/${collSystem}_${standaloneFlag}o2ver-${o2Version}_${comment}_${energy}GeV/dig_${dig}/run_job$n
+outputBasedir=/scratch/project_2003583/simO2_outputs/${collSystem}_${standaloneFlag}o2ver-${o2Version}_${comment}_${energy}GeV
+outputdir=${outputBasedir}/sim/run_job$n
+outputdirDigit=${outputBasedir}/dig_${dig}/run_job$n
 
 echo "Starting Slurm array job ${SLURM_ARRAY_JOB_ID}, task ${SLURM_ARRAY_TASK_ID}"
 
 mkdir -p $outputdir
 mkdir -p $outputdirDigit
 mkdir -p ${outputdir}/logs
+mkdir -p ${outputBasedir}/runScripts
+cp /projappl/project_2003583/simO2/runningO2/run /projappl/project_2003583/simO2/runningO2/submit.sh /projappl/project_2003583/simO2/runningO2/README_RUNNING /projappl/project_2003583/simO2/runningO2/post/Clean_o2sim.C /projappl/project_2003583/simO2/runningO2/post/FillFV0Hits.C /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh $insideMacro /projappl/project_2003583/simO2/runningO2/inside_container_post-analysis.sh ${outputBasedir}/runScripts/
 /projappl/project_2003583/simO2/runningO2/run $outputdir $outputdirDigit $nevents $digitizerHz $seedBase $insideMacro
 sleep 1
 mv logs/output_${SLURM_ARRAY_JOB_ID}-run${SLURM_ARRAY_TASK_ID}.txt $outputdir/logs/

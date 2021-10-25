@@ -98,11 +98,15 @@ dig=${digitizerHz}Hz-${digitizerComment}
 
 n=$SLURM_ARRAY_TASK_ID
 
-outputdir=/scratch/project_2003583/simO2_outputs/${collSystem}_StandaloneAMPT_o2ver-${o2Version}_${comment}_${energy}GeV/sim/run_job$n
-outputdirDigit=/scratch/project_2003583/simO2_outputs/${collSystem}_StandaloneAMPT_o2ver-${o2Version}_${comment}_${energy}GeV/dig_${dig}/run_job$n
+outputBasedir=/scratch/project_2003583/simO2_outputs/${collSystem}_StandaloneAMPT_o2ver-${o2Version}_${comment}_${energy}GeV
+outputdir=${outputBasedir}/sim/run_job$n
+outputdirDigit=${outputBasedir}/dig_${dig}/run_job$n
 
 mkdir -p ${outputdir}/logs
 mkdir -p $outputdirDigit
+mkdir -p ${outputBasedir}/runScripts
+
+cp /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/run /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/submit.sh /projappl/project_2003583/simO2/runningO2/README_RUNNING /projappl/project_2003583/simO2/runningO2/post/Clean_o2sim.C /projappl/project_2003583/simO2/runningO2/post/FillFV0Hits.C /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh $insideMacro /projappl/project_2003583/simO2/runningO2/inside_container_post-analysis.sh ${outputBasedir}/runScripts/
 
 eventfirst=$(((${n}-1)*nevents))
 /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/run $eventfirst $nevents $energy $digitizerHz $bmin $bmax $outputdir $outputdirDigit $seedbase

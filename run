@@ -26,7 +26,7 @@ export SINGULARITY_BIND="/projappl/project_2003583,/scratch/project_2003583,$TMP
 export SINGULARITY_SHELL="/bin/bash --norc"
 export SINGULARITY_CACHEDIR=$TMPDIR
 
-singularity exec --home $HOME --workdir $TMPDIR /projappl/project_2003583/alidockSingularity_alisw-slc7_21_09_20.sif $macro
+singularity exec --home $HOME --workdir $TMPDIR /projappl/project_2003583/alidockSingularity_alisw-slc7_21-10-12.sif $macro
 
 time=$(date)
 echo "Transportation and digitalization finished : $time"
