@@ -12,7 +12,7 @@
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=16000
+#SBATCH --mem-per-cpu=8000
 #SBATCH --gres=nvme:10
 #SBATCH --mail-type=END #uncomment to enable mail
 #SBATCH --array=1-100 #defines SLURM_ARRAY_TASK_ID
@@ -106,7 +106,11 @@ mkdir -p ${outputdir}/logs
 mkdir -p $outputdirDigit
 mkdir -p ${outputBasedir}/runScripts
 
-cp /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/run /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/submit.sh /projappl/project_2003583/simO2/runningO2/README_RUNNING /projappl/project_2003583/simO2/runningO2/post/Clean_o2sim.C /projappl/project_2003583/simO2/runningO2/post/FillFV0Hits.C /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh $insideMacro /projappl/project_2003583/simO2/runningO2/inside_container_post-analysis.sh ${outputBasedir}/runScripts/
+#Only need to do once.
+if [ $n -eq 1 ]
+then
+    cp /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/run /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/submit.sh /projappl/project_2003583/simO2/runningO2/README_RUNNING /projappl/project_2003583/simO2/runningO2/post/Clean_o2sim.C /projappl/project_2003583/simO2/runningO2/post/FillFV0Hits.C /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh $insideMacro /projappl/project_2003583/simO2/runningO2/inside_container_post-analysis.sh ${outputBasedir}/runScripts/
+fi
 
 eventfirst=$(((${n}-1)*nevents))
 /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/run $eventfirst $nevents $energy $digitizerHz $bmin $bmax $outputdir $outputdirDigit $seedbase
