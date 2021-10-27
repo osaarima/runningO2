@@ -104,12 +104,15 @@ outputdirDigit=${outputBasedir}/dig_${dig}/run_job$n
 
 mkdir -p ${outputdir}/logs
 mkdir -p $outputdirDigit
-mkdir -p ${outputBasedir}/runScripts
+mkdir -p ${outputBasedir}/runScripts/ampt-standalone-run
+mkdir -p ${outputBasedir}/runScripts/post
 
 #Only need to do once.
 if [ $n -eq 1 ]
 then
-    cp /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/run /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/submit.sh /projappl/project_2003583/simO2/runningO2/README_RUNNING /projappl/project_2003583/simO2/runningO2/post/Clean_o2sim.C /projappl/project_2003583/simO2/runningO2/post/FillFV0Hits.C /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh $insideMacro /projappl/project_2003583/simO2/runningO2/inside_container_post-analysis.sh ${outputBasedir}/runScripts/
+    cp /projappl/project_2003583/simO2/runningO2/README_RUNNING /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh /projappl/project_2003583/simO2/runningO2/inside_container_post-analysis.sh ${outputBasedir}/runScripts/
+    cp /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/run /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/submit.sh /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/input.ampt /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/inside_container_standalone_ampt.sh /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/gengen.C /projappl/project_2003583/simO2/runningO2/ampt-standalone-run/AmptToNTuple.C ${outputBasedir}/runScripts/ampt-standalone-run/
+    cp /projappl/project_2003583/simO2/runningO2/post/Clean_o2sim.C /projappl/project_2003583/simO2/runningO2/post/FillFV0Hits.C ${outputBasedir}/runScripts/post/
 fi
 
 eventfirst=$(((${n}-1)*nevents))

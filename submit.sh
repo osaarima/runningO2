@@ -123,8 +123,15 @@ echo "Starting Slurm array job ${SLURM_ARRAY_JOB_ID}, task ${SLURM_ARRAY_TASK_ID
 mkdir -p $outputdir
 mkdir -p $outputdirDigit
 mkdir -p ${outputdir}/logs
-mkdir -p ${outputBasedir}/runScripts
-cp /projappl/project_2003583/simO2/runningO2/run /projappl/project_2003583/simO2/runningO2/submit.sh /projappl/project_2003583/simO2/runningO2/README_RUNNING /projappl/project_2003583/simO2/runningO2/post/Clean_o2sim.C /projappl/project_2003583/simO2/runningO2/post/FillFV0Hits.C /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh $insideMacro /projappl/project_2003583/simO2/runningO2/inside_container_post-analysis.sh ${outputBasedir}/runScripts/
+mkdir -p ${outputBasedir}/runScripts/post
+
+#Only need to do once.
+if [ $n -eq 1 ]
+then
+	cp /projappl/project_2003583/simO2/runningO2/run /projappl/project_2003583/simO2/runningO2/submit.sh /projappl/project_2003583/simO2/runningO2/README_RUNNING /projappl/project_2003583/simO2/runningO2/post/Clean_o2sim.C /projappl/project_2003583/simO2/runningO2/post/FillFV0Hits.C /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh $insideMacro /projappl/project_2003583/simO2/runningO2/inside_container_post-analysis.sh ${outputBasedir}/runScripts/
+	cp /projappl/project_2003583/simO2/runningO2/post/Clean_o2sim.C /projappl/project_2003583/simO2/runningO2/post/FillFV0Hits.C ${outputBasedir}/runScripts/post/
+fi
+
 /projappl/project_2003583/simO2/runningO2/run $outputdir $outputdirDigit $nevents $digitizerHz $seedBase $insideMacro
 sleep 1
 mv logs/output_${SLURM_ARRAY_JOB_ID}-run${SLURM_ARRAY_TASK_ID}.txt $outputdir/logs/
