@@ -8,12 +8,12 @@ export dir=${1}
 export dirDigit=${2}
 export evt=${3}
 export digHz=${4}
-export seed=${5}
+export seedBase=${5}
 export macro=${6}
 
 #export seed=1000
 jobid=$SLURM_ARRAY_TASK_ID
-seed=$((seed+jobid))
+export seed=$((seedBase+jobid))
 
 export currentDir=$(pwd)
 

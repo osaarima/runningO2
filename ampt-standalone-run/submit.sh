@@ -4,18 +4,19 @@
 #SBATCH --job-name=simo2_SAmpt_osanmasa
 #SBATCH --account=project_2003583
 # partition explained here: https://docs.csc.fi/computing/running/batch-job-partitions/
-# test = 15min, 80tasks,   2node,  382GiB max memory, 3600GiB max storage
-# small= 3days, 40tasks,   1node,  382GiB max memory, 3600GiB max storage
-# large= 3days, 1040tasks, 26node, 382GiB max memory, 3600GiB max storage
-#SBATCH --partition=small
-#SBATCH --time=48:00:00
+# test =   15min,  80tasks,   2node,  382GiB max memory, 3600GiB max storage
+# small=   3days,  40tasks,   1node,  382GiB max memory, 3600GiB max storage
+# large=   3days,  1040tasks, 26node, 382GiB max memory, 3600GiB max storage
+# longrun= 14days, 40tasks,   1node,  382GiB max memory, 3600GiB max storage
+#SBATCH --partition=longrun
+#SBATCH --time=108:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=8000
 #SBATCH --gres=nvme:10
 #SBATCH --mail-type=END #uncomment to enable mail
-#SBATCH --array=1-100 #defines SLURM_ARRAY_TASK_ID
+#SBATCH --array=21-50 #defines SLURM_ARRAY_TASK_ID
 # If you change output/error here, please change
 # the cp command at the end of this macro
 #SBATCH --output=logs/output_%A-run%a.txt
@@ -24,6 +25,10 @@
 #This job uses the LOCAL_SCRATCH space for the ampt generated temporary
 #files. 100 events took a total of 367M of space in the temp dir.
 #The space is requested by --gres=nvme:2, and the number is in GB.
+
+#If you've submitted the job to the longrun partition and the reason for your job to be in pending state is:
+#QOSGrpCpuLimit
+#This means that the partition is currently full. You will very likely get resources faster from another (e.g. small) partition.
 
 if [ "$1" == "-h" ]
 then
@@ -103,7 +108,7 @@ outputdir=${outputBasedir}/sim/run_job$n
 outputdirDigit=${outputBasedir}/dig_${dig}/run_job$n
 
 mkdir -p ${outputdir}/logs
-mkdir -p $outputdirDigit
+#mkdir -p $outputdirDigit
 mkdir -p ${outputBasedir}/runScripts/ampt-standalone-run
 mkdir -p ${outputBasedir}/runScripts/post
 

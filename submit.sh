@@ -9,15 +9,15 @@
 # small= 3days, 40tasks,   1node,  382GiB max memory, 3600GiB max storage
 # large= 3days, 1040tasks, 26node, 382GiB max memory, 3600GiB max storage
 #SBATCH --partition=small
-#SBATCH --time=12:00:00
+#SBATCH --time=1:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=8000
+#SBATCH --mem-per-cpu=6000
 #SBATCH --mail-type=END #uncomment to enable mail
-#SBATCH --array=1-100 #defines SLURM_ARRAY_TASK_ID
+#SBATCH --array=1-50 #defines SLURM_ARRAY_TASK_ID
 # If you change output/error here, please change
-# the cp command at the end of this macro
+# the mv command at the end of this macro
 #SBATCH --output=logs/output_%A-run%a.txt
 #SBATCH --error=logs/errors_%A-run%a.txt
 
@@ -110,7 +110,7 @@ collSystem=PbPb
 o2Version=21-10-12
 dig=${digitizerHz}Hz-${digitizerComment}
 
-#Comment this out if not using Standalone AMPT (this is used for the purposes of doing post or digitizer only.)
+#Comment this out if not using Standalone AMPT (this is used for the purposes of doing post analysis or digitizer only.)
 standaloneFlag=StandaloneAMPT_
 
 n=$SLURM_ARRAY_TASK_ID

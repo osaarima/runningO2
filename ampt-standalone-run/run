@@ -13,9 +13,10 @@ export dirDigit=${8}
 seedBase=${9}
 
 echo Initialize a run with first event $frstEvt, total events: $Nevt
-echo energy: $energy, digitizer freq: $digHz, bmin: $bmin, bmax: $bmax
+echo energy: $energy, bmin: $bmin, bmax: $bmax
+#echo energy: $energy, digitizer freq: $digHz, bmin: $bmin, bmax: $bmax
 echo in dir: $dir
-echo with digit dir: $dirDigit
+#echo with digit dir: $dirDigit
 echo and with base seed: $seedBase
 
 #Setup dirs
