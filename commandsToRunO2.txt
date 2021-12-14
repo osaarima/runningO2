@@ -6,3 +6,34 @@ o2-sim -j 1 --seed 1000 -n 2 -m FV0 FT0 ITS PIPE MFT -g external --configKeyValu
 
 
 o2-sim-digitizer-workflow -b --onlyDet=FV0,FT0 --interactionRate 5
+
+
+batch:
+sbatch submit.sh cent0-5 100 5500 5 default 0.0 3.5 4000
+sbatch submit.sh cent5-10 100 5500 5 default 3.5 4.95 3000
+sbatch submit.sh cent10-20 100 5500 5 default 4.95 6.99 2000
+sbatch submit.sh cent20-30 100 5500 5 default 6.99 8.56 1000
+sbatch submit.sh cent30-40 100 5500 5 default 8.56 9.89 9000
+sbatch submit.sh cent40-50 100 5500 5 default 9.89 11.0 10000
+sbatch submit.sh cent50-60 100 5500 5 default 11.0 12.1 11000
+sbatch submit.sh cent60-80 100 5500 5 default 12.1 14.0 12000
+
+sbatch submit.sh cent0-5 100 5 default 4000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh
+sbatch submit.sh cent5-10 100 5 default 3000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh
+sbatch submit.sh cent10-20 100 5 default 2000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh
+sbatch submit.sh cent20-30 100 5 default 1000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh
+sbatch submit.sh cent30-40 100 5 default 9000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh
+sbatch submit.sh cent40-50 100 5 default 10000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh
+sbatch submit.sh cent50-60 100 5 default 11000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh
+sbatch submit.sh cent60-80 100 5 default 12000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer.sh
+
+sbatch submit.sh cent0-5 100 5 mips8 4000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer-reducedMips.sh
+sbatch submit.sh cent5-10 100 5 mips8 3000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer-reducedMips.sh
+sbatch submit.sh cent10-20 100 5 mips8 2000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer-reducedMips.sh
+sbatch submit.sh cent20-30 100 5 mips8 1000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer-reducedMips.sh
+sbatch submit.sh cent30-40 100 5 mips8 9000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer-reducedMips.sh
+sbatch submit.sh cent40-50 100 5 mips8 10000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer-reducedMips.sh
+sbatch submit.sh cent50-60 100 5 mips8 11000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer-reducedMips.sh
+sbatch submit.sh cent60-80 100 5 mips8 12000 /projappl/project_2003583/simO2/runningO2/inside_container_runDigitizer-reducedMips.sh
+
+/projappl/project_2003583/simO2/runningO2/inside_container_post-analysis-Multip.sh

@@ -8,8 +8,8 @@
 # small=   3days,  40tasks,   1node,  382GiB max memory, 3600GiB max storage
 # large=   3days,  1040tasks, 26node, 382GiB max memory, 3600GiB max storage
 # longrun= 14days, 40tasks,   1node,  382GiB max memory, 3600GiB max storage
-#SBATCH --partition=longrun
-#SBATCH --time=108:00:00
+#SBATCH --partition=small
+#SBATCH --time=72:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
