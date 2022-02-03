@@ -18,8 +18,8 @@ class PPQCHistos {
 	enum DETECTOR {
 	    D_ALL,
 	    D_TPC,
+	    D_TPC_C,
 	    D_TPC_A,
-	    D_TPC_B,
 	    D_FT0_A,
 	    D_FT0_C,
 	    D_FV0,
@@ -38,8 +38,8 @@ class PPQCHistos {
 	const TString detName[DET_N] = {
 	    "",
 	    "TPC",
+	    "TPC_C",
 	    "TPC_A",
-	    "TPC_B",
 	    "FT0_A",
 	    "FT0_C",
 	    "FV0",
